@@ -104,6 +104,7 @@ const PixelationController2 = () => {
         margin: "20px auto",
       }}
     >
+      <h2>Detect Pixelation Hybrid</h2>
       <AgGridReact
         rowData={rowData}
         columnDefs={columns}
