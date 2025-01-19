@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import ConfirmModal from "./ConfirmModal";
+import { format } from "date-fns";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCaNitHpE7NbD8TryQgT-nBg0k5qlTlTMQ",
@@ -58,8 +59,16 @@ const PixelationController2 = () => {
   };
 
   const columns = [
-    { headerName: "Createtime", field: "Createtime" },
-    { headerName: "IdUIStepHistory", field: "IdUIStepHistory" },
+    {
+      headerName: "Createtime",
+      valueGetter: (params) => {
+        return format(new Date(params.data.Createtime), "yyyy-MM-dd HH:mm:ss");
+      },
+    },
+    {
+      headerName: "IdUIStepHistory",
+      field: "IdUIStepHistory",
+    },
   ];
 
   const correctImageUrl = (url) => {
