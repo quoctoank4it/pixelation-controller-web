@@ -4,6 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getDatabase, ref, onValue, update } from "firebase/database";
 import { initializeApp } from "firebase/app";
+import ConfirmModal from "./ConfirmModal";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCaNitHpE7NbD8TryQgT-nBg0k5qlTlTMQ",
@@ -21,6 +22,8 @@ const PixelationController2 = () => {
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [currentAction, setCurrentAction] = useState("");
 
   useEffect(() => {
     const db = getDatabase();
@@ -64,6 +67,31 @@ const PixelationController2 = () => {
     return url
       .replace("github.com", "raw.githubusercontent.com")
       .replace("/blob/", "/");
+  };
+
+  const handleCorrectClick = () => {
+    setCurrentAction("correct");
+    setModalOpen(true);
+  };
+
+  const handleNotClick = () => {
+    setCurrentAction("not");
+    setModalOpen(true);
+  };
+
+  const handleConfirmAction = () => {
+    if (currentAction === "correct") {
+      handleUpdate(true);
+      console.log("Correct!");
+    } else if (currentAction === "not") {
+      handleUpdate(false);
+      console.log("Not!");
+    }
+    setModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
   };
 
   return (
@@ -137,7 +165,7 @@ const PixelationController2 = () => {
                       borderRadius: "4px",
                       cursor: "pointer",
                     }}
-                    onClick={() => handleUpdate(true)}
+                    onClick={() => handleCorrectClick()}
                   >
                     Correct Pixelation
                   </button>
@@ -150,7 +178,7 @@ const PixelationController2 = () => {
                       borderRadius: "4px",
                       cursor: "pointer",
                     }}
-                    onClick={() => handleUpdate(false)}
+                    onClick={() => handleNotClick()}
                   >
                     Not Pixelation
                   </button>
@@ -173,6 +201,12 @@ const PixelationController2 = () => {
           </div>
         </div>
       )}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmAction}
+        message={`Are you sure you want to update it?`}
+      />
     </div>
   );
 };
