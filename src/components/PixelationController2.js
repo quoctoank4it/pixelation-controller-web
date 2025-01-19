@@ -55,13 +55,8 @@ const PixelationController2 = () => {
   };
 
   const columns = [
-    { headerName: "IdUIStepHistory", field: "IdUIStepHistory" },
     { headerName: "Createtime", field: "Createtime" },
-    {
-      headerName: "Manual",
-      field: "Manual",
-      cellRenderer: (params) => (params.value ? "Yes" : "No"),
-    },
+    { headerName: "IdUIStepHistory", field: "IdUIStepHistory" },
   ];
 
   const correctImageUrl = (url) => {
@@ -74,7 +69,12 @@ const PixelationController2 = () => {
   return (
     <div
       className="ag-theme-alpine"
-      style={{ height: 400, width: 800, margin: "20px auto" }}
+      style={{
+        height: "calc(100vh - 40px)",
+        width: "90%",
+        maxWidth: "800px",
+        margin: "20px auto",
+      }}
     >
       <AgGridReact
         rowData={rowData}
@@ -95,6 +95,7 @@ const PixelationController2 = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            padding: "10px",
           }}
         >
           <div
@@ -102,8 +103,10 @@ const PixelationController2 = () => {
               backgroundColor: "white",
               padding: "20px",
               borderRadius: "8px",
-              width: "400px",
+              width: "100%",
+              maxWidth: "400px",
               textAlign: "center",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
             }}
           >
             {selectedRow && (
@@ -111,18 +114,22 @@ const PixelationController2 = () => {
                 <img
                   src={correctImageUrl(selectedRow.Images[0])}
                   alt="Event Image"
-                  style={{ width: "100%", marginBottom: "20px" }}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    marginBottom: "20px",
+                    borderRadius: "4px",
+                  }}
                 />
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    flexDirection: "column",
                     gap: "10px",
                   }}
                 >
                   <button
                     style={{
-                      flex: 1,
                       padding: "10px",
                       backgroundColor: "green",
                       color: "white",
@@ -136,7 +143,6 @@ const PixelationController2 = () => {
                   </button>
                   <button
                     style={{
-                      flex: 1,
                       padding: "10px",
                       backgroundColor: "red",
                       color: "white",
@@ -148,18 +154,8 @@ const PixelationController2 = () => {
                   >
                     Not Pixelation
                   </button>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "10px",
-                    marginTop: 20,
-                  }}
-                >
                   <button
                     style={{
-                      flex: 1,
                       padding: "10px",
                       backgroundColor: "blue",
                       color: "white",
