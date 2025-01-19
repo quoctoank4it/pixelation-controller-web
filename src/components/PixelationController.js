@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, update } from "firebase/database";
+import { initializeApp } from "firebase/app";
+import ConfirmModal from "./ConfirmModal";
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCaNitHpE7NbD8TryQgT-nBg0k5qlTlTMQ",
   authDomain: "pixelationcontroller.firebaseapp.com",
@@ -17,104 +16,199 @@ const firebaseConfig = {
   appId: "1:102762349077:web:663fda9a4808e8e09a441c",
 };
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+initializeApp(firebaseConfig);
 
-const PixelationControllerWeb = () => {
+const PixelationController2 = () => {
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [popupVisible, setPopupVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [currentAction, setCurrentAction] = useState("");
 
   useEffect(() => {
-    const dbRef = ref(database, "eventwritelog");
-    const unsubscribe = onValue(dbRef, (snapshot) => {
+    const db = getDatabase();
+    const dbRef = ref(db, "eventwritelog");
+    onValue(dbRef, (snapshot) => {
       const data = snapshot.val();
-      if (data) {
-        const formattedData = Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key],
-        }));
-        setRowData(formattedData);
-      }
+      const filteredData = Object.values(data || {}).filter(
+        (item) => !item.Manual
+      );
+      setRowData(filteredData);
     });
-
-    return () => unsubscribe();
   }, []);
 
-  const handleRowSelection = (event) => {
-    const selectedNode = event.api.getSelectedNodes()[0];
-    if (selectedNode) {
-      setSelectedRow(selectedNode.data);
-      setPopupVisible(true);
-    }
+  const handleRowSelected = (event) => {
+    setSelectedRow(event.data);
+    setShowModal(true);
   };
 
   const handleUpdate = (isPixelation) => {
     if (selectedRow) {
-      const dbRef = ref(database, `eventwritelog/${selectedRow.id}`);
-      update(dbRef, {
-        isPixelation: isPixelation,
-        Manual: true,
+      const db = getDatabase();
+      const dbRef = ref(db, `eventwritelog/${selectedRow.Ideventwritelog}`);
+      update(dbRef, { isPixelation, Manual: true }).then(() => {
+        setShowModal(false);
+        setRowData((prevData) =>
+          prevData.filter(
+            (row) => row.Ideventwritelog !== selectedRow.Ideventwritelog
+          )
+        );
       });
-      setPopupVisible(false);
-      setSelectedRow(null);
     }
   };
 
-  return (
-    <div>
-      <h1>Pixelation Controller</h1>
-      <div className="ag-theme-alpine" style={{ height: 400, width: "100%" }}>
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={[
-            {
-              headerName: "IdUIStepHistory",
-              field: "IdUIStepHistory",
-              sortable: true,
-              filter: true,
-            },
-            {
-              headerName: "Createtime",
-              field: "Createtime",
-              sortable: true,
-              filter: true,
-            },
-            {
-              headerName: "Manual",
-              field: "Manual",
-              sortable: true,
-              filter: true,
-            },
-          ]}
-          rowSelection="single"
-          onRowClicked={handleRowSelection}
-          modules={[ClientSideRowModelModule]}
-        />
-      </div>
+  const columns = [
+    { headerName: "Createtime", field: "Createtime" },
+    { headerName: "IdUIStepHistory", field: "IdUIStepHistory" },
+  ];
 
-      {popupVisible && selectedRow && (
-        <div className="popup">
-          <div className="popup-content">
-            <h2>Image Preview</h2>
-            <img
-              src={selectedRow.Images[0]}
-              alt="Preview"
-              style={{ maxWidth: "100%" }}
-            />
-            <div className="popup-buttons">
-              <button onClick={() => handleUpdate(true)}>
-                Correct Pixelation
-              </button>
-              <button onClick={() => handleUpdate(false)}>
-                Not Pixelation
-              </button>
-            </div>
+  const correctImageUrl = (url) => {
+    if (!url) return "";
+    return url
+      .replace("github.com", "raw.githubusercontent.com")
+      .replace("/blob/", "/");
+  };
+
+  const handleCorrectClick = () => {
+    setCurrentAction("correct");
+    setModalOpen(true);
+  };
+
+  const handleNotClick = () => {
+    setCurrentAction("not");
+    setModalOpen(true);
+  };
+
+  const handleConfirmAction = () => {
+    if (currentAction === "correct") {
+      handleUpdate(true);
+      console.log("Correct!");
+    } else if (currentAction === "not") {
+      handleUpdate(false);
+      console.log("Not!");
+    }
+    setModalOpen(false);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  return (
+    <div
+      className="ag-theme-alpine"
+      style={{
+        height: "calc(100vh - 40px)",
+        width: "90%",
+        maxWidth: "800px",
+        margin: "20px auto",
+      }}
+    >
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={columns}
+        rowSelection="single"
+        onRowClicked={handleRowSelected}
+      />
+
+      {showModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "10px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "8px",
+              width: "100%",
+              maxWidth: "400px",
+              textAlign: "center",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            {selectedRow && (
+              <div>
+                <img
+                  src={correctImageUrl(selectedRow.Images[0])}
+                  alt="Event Image"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    marginBottom: "20px",
+                    borderRadius: "4px",
+                  }}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
+                  }}
+                >
+                  <button
+                    style={{
+                      padding: "10px",
+                      backgroundColor: "green",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleCorrectClick()}
+                  >
+                    Correct Pixelation
+                  </button>
+                  <button
+                    style={{
+                      padding: "10px",
+                      backgroundColor: "red",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleNotClick()}
+                  >
+                    Not Pixelation
+                  </button>
+                  <button
+                    style={{
+                      padding: "10px",
+                      backgroundColor: "blue",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setShowModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmAction}
+        message={`Are you sure you want to update it?`}
+      />
     </div>
   );
 };
 
-export default PixelationControllerWeb;
+export default PixelationController2;
