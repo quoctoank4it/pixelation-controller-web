@@ -34,7 +34,12 @@ const PixelationController2 = () => {
       const filteredData = Object.values(data || {}).filter(
         (item) => !item.Manual
       );
-      setRowData(filteredData);
+      // Sort the filtered data by Createtime in descending order
+      const sortedData = filteredData.sort(
+        (a, b) => new Date(b.Createtime) - new Date(a.Createtime)
+      );
+
+      setRowData(sortedData);
     });
   }, []);
 
