@@ -1,10 +1,10 @@
 import "./App.css";
-import PixelationController3 from "./components/PixelationController3";
+import PixelationController2 from "./components/PixelationController2";
 
 function App() {
   return (
     <div className="App">
-      <PixelationController3 />
+      <PixelationController2 />
     </div>
   );
 }

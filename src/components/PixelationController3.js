@@ -6,13 +6,13 @@ import { getDatabase, ref, onValue, update } from "firebase/database";
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyCaNitHpE7NbD8TryQgT-nBg0k5qlTlTMQ",
+  authDomain: "pixelationcontroller.firebaseapp.com",
+  databaseURL: "https://pixelationcontroller-default-rtdb.firebaseio.com",
+  projectId: "pixelationcontroller",
+  storageBucket: "pixelationcontroller.firebasestorage.app",
+  messagingSenderId: "102762349077",
+  appId: "1:102762349077:web:663fda9a4808e8e09a441c",
 };
 
 initializeApp(firebaseConfig);
