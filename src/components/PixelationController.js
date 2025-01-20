@@ -19,7 +19,7 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-const PixelationController2 = () => {
+const PixelationController = () => {
   const [rowData, setRowData] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -64,6 +64,14 @@ const PixelationController2 = () => {
   };
 
   const columns = [
+    {
+      headerName: "No",
+      valueGetter: (params) => {
+        return params.node.rowIndex + 1; // Thêm 1 vì rowIndex bắt đầu từ 0
+      },
+      sortable: false, // Vô hiệu hóa sắp xếp
+      width: 60,
+    },
     {
       headerName: "Createtime",
       valueGetter: (params) => {
@@ -226,4 +234,4 @@ const PixelationController2 = () => {
   );
 };
 
-export default PixelationController2;
+export default PixelationController;
