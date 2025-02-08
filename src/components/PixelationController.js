@@ -73,14 +73,14 @@ const PixelationController = () => {
       width: 60,
     },
     {
+      headerName: "MachineName",
+      field: "Machinename",
+    },
+    {
       headerName: "Createtime",
       valueGetter: (params) => {
         return format(new Date(params.data.Createtime), "yyyy-MM-dd HH:mm:ss");
       },
-    },
-    {
-      headerName: "MachineName",
-      field: "Machinename",
     },
   ];
 
