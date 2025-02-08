@@ -79,8 +79,8 @@ const PixelationController = () => {
       },
     },
     {
-      headerName: "IdUIStepHistory",
-      field: "IdUIStepHistory",
+      headerName: "MachineName",
+      field: "Machinename",
     },
   ];
 
