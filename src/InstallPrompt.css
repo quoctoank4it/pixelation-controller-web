@@ -1,0 +1,371 @@
+/* Install Banner Styles */
+.install-banner {
+  position: fixed;
+  bottom: 0; /* At bottom of screen */
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  padding: 12px 16px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.install-banner-content {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 12px;
+}
+
+.install-banner-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.install-banner-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.install-banner-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.install-banner-subtitle {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.install-banner-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.install-banner-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.install-banner-btn.install-btn {
+  background: white;
+  color: #4caf50;
+}
+
+.install-banner-btn.install-btn:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.install-banner-btn.more-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.install-banner-btn.more-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.install-banner-btn.close-btn {
+  background: none;
+  color: white;
+  padding: 4px 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.install-banner-btn.close-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Install Modal Styles */
+.install-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.install-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.install-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0 24px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 24px;
+}
+
+.install-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.install-modal-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.install-modal-close:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.install-modal-content {
+  padding: 0 24px;
+}
+
+.install-modal-icon {
+  text-align: center;
+  font-size: 48px;
+  margin-bottom: 24px;
+}
+
+.install-benefits {
+  margin-bottom: 32px;
+}
+
+.install-benefits h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.install-benefits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.install-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.install-benefits li strong {
+  color: #4caf50;
+}
+
+.install-instructions h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.install-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.install-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.step-number {
+  background: #4caf50;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.install-modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 24px;
+  border-top: 1px solid #eee;
+  margin-top: 24px;
+}
+
+.install-modal-btn {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.install-modal-btn.secondary {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.install-modal-btn.secondary:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+.install-modal-btn.primary {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+}
+
+.install-modal-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .install-banner {
+    padding: 12px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .install-banner-content {
+    gap: 10px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .install-banner-text {
+    order: 1;
+  }
+
+  .install-banner-icon {
+    order: 0;
+    font-size: 20px;
+  }
+
+  .install-banner-actions {
+    order: 2;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .install-banner-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .install-modal {
+    margin: 0;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .install-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .install-modal-header,
+  .install-modal-content,
+  .install-modal-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .install-benefits li,
+  .install-step {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .install-banner-title {
+    font-size: 13px;
+  }
+
+  .install-banner-subtitle {
+    font-size: 11px;
+  }
+}

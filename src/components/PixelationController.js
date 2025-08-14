@@ -127,12 +127,18 @@ const PixelationController = () => {
       }}
     >
       <h2>Detect Pixelation Hybrid</h2>
-      <AgGridReact
-        rowData={rowData}
-        columnDefs={columns}
-        rowSelection="single"
-        onRowClicked={handleRowSelected}
-      />
+      {Array.isArray(rowData) &&
+        Array.isArray(columns) &&
+        columns.length > 0 && (
+          <AgGridReact
+            rowData={rowData}
+            columnDefs={columns}
+            rowSelection={{ type: "single" }}
+            onRowClicked={handleRowSelected}
+            suppressMenuHide={true}
+            suppressColumnVirtualisation={true}
+          />
+        )}
 
       {showModal && (
         <div
