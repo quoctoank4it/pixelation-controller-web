@@ -12,6 +12,15 @@ const firebaseConfig = {
   databaseURL: "https://pixelationcontroller-default-rtdb.firebaseio.com/",
 };
 
+navigator.serviceWorker
+  .register(`${process.env.PUBLIC_URL}/firebase-messaging-sw.js`)
+  .then((registration) => {
+    console.log("Service Worker registered:", registration);
+  })
+  .catch((err) => {
+    console.error("Service Worker registration failed:", err);
+  });
+
 const app =
   getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
