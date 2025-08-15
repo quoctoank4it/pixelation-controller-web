@@ -39,11 +39,15 @@ function App() {
 
   const allowNotification = async () => {
     try {
+      const registration = await navigator.serviceWorker.register(
+        `${process.env.PUBLIC_URL}/firebase-messaging-sw.js`
+      );
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
         const token = await getToken(messaging, {
           vapidKey:
             "BIqbzuiiPkhZSf6cuyU3MSbI4Lld-dwNGjBA78KyfFiF7QCqphgvIS8faPvAiO_bB-soMb9Dgm6kTUVtdm0v-Io",
+          serviceWorkerRegistration: registration,
         });
         console.log("FCM Token:", token);
 
