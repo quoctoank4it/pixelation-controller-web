@@ -2,6 +2,10 @@ import "./App.css";
 import PixelationController from "./components/PixelationController";
 import ErrorBoundary from "./components/ErrorBoundary";
 import React, { useEffect, useState } from "react";
+import { messaging, database } from "./firebase";
+import { getToken } from "firebase/messaging";
+import { ref, set } from "firebase/database";
+
 import "./InstallPrompt.css";
 
 function App() {
@@ -33,9 +37,50 @@ function App() {
     setShowInstallAlert(false);
   };
 
+  const allowNotification = async () => {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        const token = await getToken(messaging, {
+          vapidKey:
+            "BIqbzuiiPkhZSf6cuyU3MSbI4Lld-dwNGjBA78KyfFiF7QCqphgvIS8faPvAiO_bB-soMb9Dgm6kTUVtdm0v-Io",
+        });
+        console.log("FCM Token:", token);
+
+        // Lưu token lên Realtime Database
+        await set(ref(database, "tokens/" + token), {
+          token: token,
+          createdAt: Date.now(),
+        });
+
+        alert("Token saved and notifications allowed!");
+      } else {
+        alert("Permission denied");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error getting token");
+    }
+  };
+
   return (
     <ErrorBoundary>
       <div className="App">
+        <button
+          onClick={allowNotification}
+          style={{
+            marginTop: "16px",
+            height: "40px",
+            padding: "0 16px",
+            border: "none",
+            cursor: "pointer",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            borderRadius: "4px",
+          }}
+        >
+          Allow Notification
+        </button>
         <PixelationController />
         {showInstallAlert && (
           <div className="install-banner">
