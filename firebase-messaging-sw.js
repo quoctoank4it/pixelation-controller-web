@@ -23,7 +23,7 @@ messaging.onBackgroundMessage(function (payload) {
     body: payload.data.body,
     icon: "/logo192.png",
     data: {
-      url: payload.data.url || "/", // URL muốn mở khi click
+      url: `${payload.data.url}/pixelation-controller-web/` || "/", // URL muốn mở khi click
     },
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
