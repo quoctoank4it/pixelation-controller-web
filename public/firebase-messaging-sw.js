@@ -23,7 +23,7 @@ messaging.onBackgroundMessage(function (payload) {
     body: payload.data.body,
     icon: "/logo192.png",
     data: {
-      url: `${payload.data.url}/pixelation-controller-web/` || "/", // URL muốn mở khi click
+      url: "https://quoctoank4it.github.io/pixelation-controller-web/",
     },
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
