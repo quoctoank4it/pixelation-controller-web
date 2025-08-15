@@ -16,11 +16,39 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// Hiển thị notification khi app đang background
 messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = payload.data.title;
   const notificationOptions = {
     body: payload.data.body,
     icon: "/logo192.png",
+    data: {
+      url: payload.data.url || "/", // URL muốn mở khi click
+    },
   };
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Xử lý click vào notification
+self.addEventListener("notificationclick", function (event) {
+  event.notification.close(); // đóng notification
+
+  const urlToOpen = event.notification.data.url;
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((windowClients) => {
+        // Nếu có tab đang mở, focus nó
+        for (let client of windowClients) {
+          if (client.url === urlToOpen && "focus" in client) {
+            return client.focus();
+          }
+        }
+        // Nếu không có, mở tab mới
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      })
+  );
 });
