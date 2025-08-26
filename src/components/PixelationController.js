@@ -81,6 +81,7 @@ const PixelationController = () => {
         }
         return "";
       },
+      width: 60,
     },
     {
       headerName: "MachineName",
