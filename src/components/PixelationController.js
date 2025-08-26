@@ -150,9 +150,10 @@ const PixelationController = () => {
               resizable: true,
               minWidth: 100,
             }}
+            onRowClicked={handleRowSelected}
             pagination={false}
             paginationPageSize={20}
-            rowSelection="multiple"
+            rowSelection="single"
             suppressRowClickSelection={true}
             animateRows={true}
           />
