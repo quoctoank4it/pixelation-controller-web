@@ -73,6 +73,16 @@ const PixelationController = () => {
       width: 60,
     },
     {
+      headerName: "GPTResult",
+      field: "GPTResult",
+      valueGetter: (params) => {
+        if (params.data && typeof params.data.GPTResult !== "undefined") {
+          return params.data.GPTResult ? "True" : "False";
+        }
+        return "";
+      },
+    },
+    {
       headerName: "MachineName",
       field: "Machinename",
     },
@@ -133,10 +143,17 @@ const PixelationController = () => {
           <AgGridReact
             rowData={rowData}
             columnDefs={columns}
-            rowSelection={{ type: "single" }}
-            onRowClicked={handleRowSelected}
-            suppressMenuHide={true}
-            suppressColumnVirtualisation={true}
+            defaultColDef={{
+              sortable: true,
+              filter: false,
+              resizable: true,
+              minWidth: 100,
+            }}
+            pagination={false}
+            paginationPageSize={20}
+            rowSelection="multiple"
+            suppressRowClickSelection={true}
+            animateRows={true}
           />
         )}
 
