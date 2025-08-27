@@ -4,13 +4,44 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import React, { useEffect, useState } from "react";
 import { messaging, database } from "./firebase";
 import { getToken } from "firebase/messaging";
-import { ref, set } from "firebase/database";
+import { ref, set, get, update } from "firebase/database";
 
 import "./InstallPrompt.css";
 
 function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallAlert, setShowInstallAlert] = useState(false);
+  const [ocrThreshold, setOcrThreshold] = useState(0);
+  const [loadingOcr, setLoadingOcr] = useState(true);
+  // Load ocrconfidencethreshold from Firebase on mount
+  useEffect(() => {
+    const fetchOcrThreshold = async () => {
+      try {
+        const snapshot = await get(ref(database, "ocrconfidencethreshold"));
+        if (snapshot.exists()) {
+          setOcrThreshold(snapshot.val());
+        }
+      } catch (e) {
+        console.error("Error loading ocrconfidencethreshold", e);
+      } finally {
+        setLoadingOcr(false);
+      }
+    };
+    fetchOcrThreshold();
+  }, []);
+  // Handle input change and update to Firebase
+  const handleOcrInputChange = (e) => {
+    setOcrThreshold(e.target.value);
+  };
+
+  const handleOcrSave = async () => {
+    try {
+      await set(ref(database, "ocrconfidencethreshold"), Number(ocrThreshold));
+      alert("Cập nhật ocrconfidencethreshold thành công!");
+    } catch (e) {
+      alert("Lỗi khi cập nhật ocrconfidencethreshold");
+    }
+  };
 
   useEffect(() => {
     const handler = (e) => {
@@ -85,6 +116,49 @@ function App() {
         >
           Allow Notification
         </button>
+
+        {/* OCR Confidence Threshold Input */}
+        <div
+          style={{
+            margin: "24px auto",
+            maxWidth: 400,
+            background: "#f8f8f8",
+            padding: 16,
+            borderRadius: 8,
+          }}
+        >
+          <label
+            htmlFor="ocr-threshold"
+            style={{ fontWeight: 600, marginRight: 8 }}
+          >
+            OCR Confidence Threshold:
+          </label>
+          <input
+            id="ocr-threshold"
+            type="number"
+            min="0"
+            max="100"
+            value={loadingOcr ? "" : ocrThreshold}
+            onChange={handleOcrInputChange}
+            style={{ width: 80, marginRight: 8, padding: 4 }}
+            disabled={loadingOcr}
+          />
+          <button
+            onClick={handleOcrSave}
+            disabled={loadingOcr}
+            style={{
+              padding: "4px 12px",
+              borderRadius: 4,
+              border: "none",
+              background: "#28a745",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            Save
+          </button>
+        </div>
+
         <PixelationController />
         {showInstallAlert && (
           <div className="install-banner">
