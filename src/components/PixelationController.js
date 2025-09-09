@@ -84,6 +84,11 @@ const PixelationController = () => {
       width: 60,
     },
     {
+      headerName: "GPTConfidence",
+      field: "GPTConfidence",
+      width: 100,
+    },
+    {
       headerName: "MachineName",
       field: "Machinename",
     },
