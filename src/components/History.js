@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getDatabase, ref, onValue, update } from "firebase/database";
+import { getDatabase, ref, onValue, update, remove } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import ConfirmModal from "./ConfirmModal";
 import { format } from "date-fns";
@@ -114,9 +114,8 @@ const History = () => {
     if (currentAction === "delete" && selectedRow) {
       const db = getDatabase();
       const dbRef = ref(db, `historylog/${selectedRow.Ideventwritelog}`);
-      // Xóa node khỏi Firebase
-      import("firebase/database").then(({ remove }) => {
-        remove(dbRef).then(() => {
+      remove(dbRef)
+        .then(() => {
           setShowModal(false);
           setRowData((prevData) =>
             prevData.filter(
@@ -124,8 +123,11 @@ const History = () => {
             )
           );
           console.log("Deleted!");
+        })
+        .catch((err) => {
+          alert("Something went wrong.");
+          console.error(err);
         });
-      });
     }
     setModalOpen(false);
   };
