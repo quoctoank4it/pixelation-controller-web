@@ -52,9 +52,8 @@ const styles = {
     fontSize: 14,
   },
   active: {
-    background: "#007bff",
+    background: "#28a745",
     color: "#fff",
-    borderColor: "#007bff",
   },
 };
 
