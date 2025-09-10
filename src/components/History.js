@@ -105,23 +105,27 @@ const History = () => {
       .replace("/blob/", "/");
   };
 
-  const handleCorrectClick = () => {
-    setCurrentAction("correct");
-    setModalOpen(true);
-  };
-
-  const handleNotClick = () => {
-    setCurrentAction("not");
+  const handleDeleteClick = () => {
+    setCurrentAction("delete");
     setModalOpen(true);
   };
 
   const handleConfirmAction = () => {
-    if (currentAction === "correct") {
-      handleUpdate(true);
-      console.log("Correct!");
-    } else if (currentAction === "not") {
-      handleUpdate(false);
-      console.log("Not!");
+    if (currentAction === "delete" && selectedRow) {
+      const db = getDatabase();
+      const dbRef = ref(db, `historylog/${selectedRow.Ideventwritelog}`);
+      // Xóa node khỏi Firebase
+      import("firebase/database").then(({ remove }) => {
+        remove(dbRef).then(() => {
+          setShowModal(false);
+          setRowData((prevData) =>
+            prevData.filter(
+              (row) => row.Ideventwritelog !== selectedRow.Ideventwritelog
+            )
+          );
+          console.log("Deleted!");
+        });
+      });
     }
     setModalOpen(false);
   };
@@ -216,7 +220,7 @@ const History = () => {
                       borderRadius: "4px",
                       cursor: "pointer",
                     }}
-                    onClick={() => handleNotClick()}
+                    onClick={() => handleDeleteClick()}
                   >
                     Delete
                   </button>
