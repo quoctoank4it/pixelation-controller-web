@@ -90,7 +90,9 @@ const Config = () => {
     <div style={styles.box}>
       <h3 style={{ marginTop: 0 }}>Config System</h3>
       <div style={styles.row}>
-        <label style={styles.label}>Pixelation Confidence Threshold</label>
+        <label style={styles.label}>
+          Threshold for GPT to detect pixelation
+        </label>
         <input
           type="number"
           min={0}
