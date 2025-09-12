@@ -63,12 +63,9 @@ const History = () => {
 
   const columns = [
     {
-      headerName: "No",
-      valueGetter: (params) => {
-        return params.node.rowIndex + 1; // Thêm 1 vì rowIndex bắt đầu từ 0
-      },
-      sortable: false, // Vô hiệu hóa sắp xếp
-      width: 60,
+      headerName: "Name",
+      field: "username",
+      width: 100,
     },
     {
       headerName: "GPTResult",
@@ -95,6 +92,15 @@ const History = () => {
       valueGetter: (params) => {
         return format(new Date(params.data.Createtime), "yyyy-MM-dd HH:mm:ss");
       },
+    },
+    {
+      headerName: "No",
+      valueGetter: (params) => {
+        // Đánh số thứ tự giảm dần
+        return params.api.getDisplayedRowCount() - params.node.rowIndex;
+      },
+      sortable: false, // Vô hiệu hóa sắp xếp
+      width: 60,
     },
   ];
 
@@ -213,19 +219,23 @@ const History = () => {
                     gap: "10px",
                   }}
                 >
-                  <button
-                    style={{
-                      padding: "10px",
-                      backgroundColor: "red",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleDeleteClick()}
-                  >
-                    Delete
-                  </button>
+                  {localStorage.getItem("username").toLowerCase() ===
+                    "toan" && (
+                    <button
+                      style={{
+                        padding: "10px",
+                        backgroundColor: "red",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleDeleteClick()}
+                    >
+                      Delete
+                    </button>
+                  )}
+
                   <button
                     style={{
                       padding: "10px",

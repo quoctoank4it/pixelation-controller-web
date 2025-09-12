@@ -25,6 +25,8 @@ const PixelationController = () => {
   const [showModal, setShowModal] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [inputName, setInputName] = useState("");
 
   useEffect(() => {
     const db = getDatabase();
@@ -52,13 +54,32 @@ const PixelationController = () => {
     if (selectedRow) {
       const db = getDatabase();
       const dbRef = ref(db, `eventwritelog/${selectedRow.Ideventwritelog}`);
-      update(dbRef, { isPixelation, Manual: true }).then(() => {
-        setShowModal(false);
-        setRowData((prevData) =>
-          prevData.filter(
-            (row) => row.Ideventwritelog !== selectedRow.Ideventwritelog
-          )
-        );
+      const historyRef = ref(db, `historylog/${selectedRow.Ideventwritelog}`);
+      // Copy node sang historylog
+      const username = localStorage.getItem("username");
+      const newData = {
+        ...selectedRow,
+        isPixelation,
+        Manual: true,
+        username,
+        Createtime: selectedRow.Createtime || new Date().toISOString(),
+      };
+      import("firebase/database").then(({ set }) => {
+        set(historyRef, newData).then(() => {
+          // Sau khi copy, update eventwritelog như cũ
+          update(dbRef, {
+            isPixelation,
+            Manual: true,
+            username,
+          }).then(() => {
+            setShowModal(false);
+            setRowData((prevData) =>
+              prevData.filter(
+                (row) => row.Ideventwritelog !== selectedRow.Ideventwritelog
+              )
+            );
+          });
+        });
       });
     }
   };
@@ -67,7 +88,8 @@ const PixelationController = () => {
     {
       headerName: "No",
       valueGetter: (params) => {
-        return params.node.rowIndex + 1; // Thêm 1 vì rowIndex bắt đầu từ 0
+        // Đánh số thứ tự giảm dần
+        return params.api.getDisplayedRowCount() - params.node.rowIndex;
       },
       sortable: false, // Vô hiệu hóa sắp xếp
       width: 60,
@@ -118,6 +140,12 @@ const PixelationController = () => {
   };
 
   const handleConfirmAction = () => {
+    // Kiểm tra localStorage
+    const username = localStorage.getItem("username");
+    if (!username) {
+      setShowNamePrompt(true);
+      return;
+    }
     if (currentAction === "correct") {
       handleUpdate(true);
       console.log("Correct!");
@@ -126,6 +154,17 @@ const PixelationController = () => {
       console.log("Not!");
     }
     setModalOpen(false);
+  };
+
+  // Xử lý lưu tên khi nhập
+  const handleNameSubmit = () => {
+    if (inputName.trim()) {
+      localStorage.setItem("username", inputName.trim());
+      setShowNamePrompt(false);
+      setInputName("");
+      // Sau khi lưu tên, thực hiện lại thao tác xác nhận
+      handleConfirmAction();
+    }
   };
 
   const handleCloseModal = () => {
@@ -251,6 +290,79 @@ const PixelationController = () => {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* Popup nhập tên nếu chưa có username trong localStorage */}
+      {showNamePrompt && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              background: "white",
+              padding: 24,
+              borderRadius: 8,
+              minWidth: 300,
+              textAlign: "center",
+            }}
+          >
+            <h3>Enter your name to confirm the action</h3>
+            <input
+              type="text"
+              value={inputName}
+              onChange={(e) => setInputName(e.target.value)}
+              style={{
+                padding: 8,
+                width: "80%",
+                marginBottom: 16,
+                borderRadius: 4,
+                border: "1px solid #ccc",
+              }}
+              placeholder="Enter your name..."
+            />
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+              <button
+                style={{
+                  padding: "8px 16px",
+                  background: "#007bff",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                }}
+                onClick={handleNameSubmit}
+              >
+                Submit
+              </button>
+              <button
+                style={{
+                  padding: "8px 16px",
+                  background: "#ccc",
+                  color: "#333",
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setShowNamePrompt(false);
+                  setInputName("");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
