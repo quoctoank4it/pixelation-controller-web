@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/pixelation-controller-web/static/css/main.5e58ea83.css",
-    "main.js": "/pixelation-controller-web/static/js/main.853e84d4.js",
+    "main.js": "/pixelation-controller-web/static/js/main.2771bc41.js",
     "static/js/488.a6227a0c.chunk.js": "/pixelation-controller-web/static/js/488.a6227a0c.chunk.js",
     "index.html": "/pixelation-controller-web/index.html",
     "main.5e58ea83.css.map": "/pixelation-controller-web/static/css/main.5e58ea83.css.map",
-    "main.853e84d4.js.map": "/pixelation-controller-web/static/js/main.853e84d4.js.map",
+    "main.2771bc41.js.map": "/pixelation-controller-web/static/js/main.2771bc41.js.map",
     "488.a6227a0c.chunk.js.map": "/pixelation-controller-web/static/js/488.a6227a0c.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.5e58ea83.css",
-    "static/js/main.853e84d4.js"
+    "static/js/main.2771bc41.js"
   ]
 }
