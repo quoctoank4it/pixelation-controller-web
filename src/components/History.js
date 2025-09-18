@@ -219,7 +219,7 @@ const History = () => {
                     gap: "10px",
                   }}
                 >
-                  {localStorage.getItem("username").toLowerCase() ===
+                  {(localStorage.getItem("username") || "").toLowerCase() ===
                     "toan" && (
                     <button
                       style={{
