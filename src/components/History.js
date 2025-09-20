@@ -102,6 +102,10 @@ const History = () => {
       sortable: false, // Vô hiệu hóa sắp xếp
       width: 60,
     },
+    {
+      headerName: "Ideventwritelog",
+      field: "Ideventwritelog",
+    },
   ];
 
   const correctImageUrl = (url) => {
