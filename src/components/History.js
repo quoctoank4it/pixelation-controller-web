@@ -116,8 +116,24 @@ const History = () => {
   };
 
   const handleDeleteClick = () => {
-    setCurrentAction("delete");
-    setModalOpen(true);
+    const db = getDatabase();
+    const dbRef = ref(db, `historylog/${selectedRow.Ideventwritelog}`);
+    remove(dbRef)
+      .then(() => {
+        setShowModal(false);
+        setRowData((prevData) =>
+          prevData.filter(
+            (row) => row.Ideventwritelog !== selectedRow.Ideventwritelog
+          )
+        );
+        console.log("Deleted!");
+      })
+      .catch((err) => {
+        alert("Something went wrong.");
+        console.error(err);
+      });
+    // setCurrentAction("delete");
+    // setModalOpen(true);
   };
 
   const handleConfirmAction = () => {
@@ -225,20 +241,20 @@ const History = () => {
                 >
                   {(localStorage.getItem("username") || "").toLowerCase() ===
                     "toan" && (
-                    <button
-                      style={{
-                        padding: "10px",
-                        backgroundColor: "red",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleDeleteClick()}
-                    >
-                      Delete
-                    </button>
-                  )}
+                      <button
+                        style={{
+                          padding: "10px",
+                          backgroundColor: "red",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleDeleteClick()}
+                      >
+                        Delete
+                      </button>
+                    )}
 
                   <button
                     style={{

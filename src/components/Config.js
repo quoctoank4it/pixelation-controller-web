@@ -7,9 +7,11 @@ import { getToken } from "firebase/messaging";
 const Config = () => {
   const [ocrThreshold, setOcrThreshold] = useState("");
   const [pixelationThreshold, setPixelationThreshold] = useState("");
+  const [incorrectPixelationThreshold, setIncorrectPixelationThreshold] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingPixelation, setSavingPixelation] = useState(false);
+  const [savingIncorrectPixelation, setSavingIncorrectPixelation] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -30,6 +32,20 @@ const Config = () => {
       try {
         const snap = await get(ref(database, "pixelationconfidencethreshold"));
         if (snap.exists()) setPixelationThreshold(snap.val());
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const snap = await get(ref(database, "incorrectpixelationconfidencethreshold"));
+        if (snap.exists()) setIncorrectPixelationThreshold(snap.val());
       } catch (e) {
         console.error(e);
       } finally {
@@ -63,6 +79,21 @@ const Config = () => {
       alert("Error saving");
     } finally {
       setSavingPixelation(false);
+    }
+  };
+
+  const saveIncorrectPixelation = async () => {
+    setSavingIncorrectPixelation(true);
+    try {
+      await set(
+        ref(database, "incorrectpixelationconfidencethreshold"),
+        Number(incorrectPixelationThreshold)
+      );
+      alert("Saved successfully");
+    } catch (e) {
+      alert("Error saving");
+    } finally {
+      setSavingIncorrectPixelation(false);
     }
   };
 
@@ -111,6 +142,27 @@ const Config = () => {
         </button>
       </div>
       <div style={styles.row}>
+        <label style={styles.label}>
+          Threshold for GPT to detect incorrect pixelation
+        </label>
+        <input
+          type="number"
+          min={0}
+          max={1}
+          value={loading ? "" : incorrectPixelationThreshold}
+          onChange={(e) => setIncorrectPixelationThreshold(e.target.value)}
+          style={styles.input}
+          disabled={loading || savingIncorrectPixelation}
+        />
+        <button
+          onClick={saveIncorrectPixelation}
+          disabled={loading || savingIncorrectPixelation}
+          style={styles.button}
+        >
+          {savingIncorrectPixelation ? "Saving..." : "Save"}
+        </button>
+      </div>
+      <div style={styles.row}>
         <label style={styles.label}>OCR Confidence Threshold</label>
         <input
           type="number"
@@ -147,7 +199,7 @@ const styles = {
     background: "#fff",
     padding: 20,
     borderRadius: 12,
-    maxWidth: 480,
+    maxWidth: 510,
     margin: "24px auto",
     boxShadow: "0 4px 10px rgba(0,0,0,0.06)",
   },
