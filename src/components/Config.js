@@ -8,10 +8,34 @@ const Config = () => {
   const [ocrThreshold, setOcrThreshold] = useState("");
   const [pixelationThreshold, setPixelationThreshold] = useState("");
   const [incorrectPixelationThreshold, setIncorrectPixelationThreshold] = useState("");
+  const [zoominfoTest, setZoominfoTest] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingPixelation, setSavingPixelation] = useState(false);
   const [savingIncorrectPixelation, setSavingIncorrectPixelation] = useState(false);
+  const [savingZoominfo, setSavingZoominfo] = useState(false);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const snap = await get(ref(database, "zoominfo_test"));
+        if (snap.exists()) setZoominfoTest(!!snap.val());
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    load();
+  }, []);
+  const saveZoominfo = async () => {
+    setSavingZoominfo(true);
+    try {
+      await set(ref(database, "zoominfo_test"), zoominfoTest);
+      alert("Saved successfully");
+    } catch (e) {
+      alert("Error saving");
+    } finally {
+      setSavingZoominfo(false);
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -120,6 +144,28 @@ const Config = () => {
   return (
     <div style={styles.box}>
       <h3 style={{ marginTop: 0 }}>Config System</h3>
+      
+      <div style={styles.row}>
+        <label style={styles.label}>zoominfo_test</label>
+        <input
+          type="checkbox"
+          checked={zoominfoTest}
+          onChange={async e => {
+            const checked = e.target.checked;
+            setZoominfoTest(checked);
+            setSavingZoominfo(true);
+            try {
+              await set(ref(database, "zoominfo_test"), checked);
+            } catch (e) {
+              alert("Error saving");
+            } finally {
+              setSavingZoominfo(false);
+            }
+          }}
+          disabled={savingZoominfo}
+          style={{ width: 20, height: 20 }}
+        />
+      </div>
       <div style={styles.row}>
         <label style={styles.label}>
           Threshold for GPT to detect pixelation
@@ -141,7 +187,7 @@ const Config = () => {
           {savingPixelation ? "Saving..." : "Save"}
         </button>
       </div>
-      <div style={styles.row}>
+      {/* <div style={styles.row}>
         <label style={styles.label}>
           Threshold for GPT to detect incorrect pixelation
         </label>
@@ -161,7 +207,7 @@ const Config = () => {
         >
           {savingIncorrectPixelation ? "Saving..." : "Save"}
         </button>
-      </div>
+      </div> */}
       <div style={styles.row}>
         <label style={styles.label}>OCR Confidence Threshold</label>
         <input
