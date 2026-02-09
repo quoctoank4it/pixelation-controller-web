@@ -9,11 +9,34 @@ const Config = () => {
   const [pixelationThreshold, setPixelationThreshold] = useState("");
   const [incorrectPixelationThreshold, setIncorrectPixelationThreshold] = useState("");
   const [zoominfoTest, setZoominfoTest] = useState(false);
+  const [activeLicenseDate, setActiveLicenseDate] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingPixelation, setSavingPixelation] = useState(false);
   const [savingIncorrectPixelation, setSavingIncorrectPixelation] = useState(false);
   const [savingZoominfo, setSavingZoominfo] = useState(false);
+  const [savingActiveLicenseDate, setSavingActiveLicenseDate] = useState(false);
+
+  const toDateTimeText = (value) => {
+    const pad = (num) => String(num).padStart(2, "0");
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    const hh = pad(date.getHours());
+    const min = pad(date.getMinutes());
+    const ss = pad(date.getSeconds());
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+  };
+
+  const normalizeDateTimeText = (value) => {
+    if (!value) return "";
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(value)) return value;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return toDateTimeText(parsed.toISOString());
+  };
   useEffect(() => {
     const load = async () => {
       try {
@@ -42,6 +65,23 @@ const Config = () => {
       try {
         const snap = await get(ref(database, "ocrconfidencethreshold"));
         if (snap.exists()) setOcrThreshold(snap.val());
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const snap = await get(ref(database, "active_license_date"));
+        if (snap.exists()) {
+          const value = snap.val();
+          setActiveLicenseDate(normalizeDateTimeText(value));
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -118,6 +158,21 @@ const Config = () => {
       alert("Error saving");
     } finally {
       setSavingIncorrectPixelation(false);
+    }
+  };
+
+  const saveActiveLicenseDate = async () => {
+    setSavingActiveLicenseDate(true);
+    try {
+      await set(
+        ref(database, "active_license_date"),
+        normalizeDateTimeText(activeLicenseDate)
+      );
+      alert("Saved successfully");
+    } catch (e) {
+      alert("Error saving");
+    } finally {
+      setSavingActiveLicenseDate(false);
     }
   };
 
@@ -236,6 +291,24 @@ const Config = () => {
           Allow Notification
         </button>
       </div>
+      <div style={styles.row}>
+        <label style={styles.label}>active_license_date</label>
+        <input
+          type="text"
+          placeholder="YYYY-MM-DD HH:mm:ss"
+          value={loading ? "" : activeLicenseDate}
+          onChange={(e) => setActiveLicenseDate(e.target.value)}
+          style={styles.inputWide}
+          disabled={loading || savingActiveLicenseDate}
+        />
+        <button
+          onClick={saveActiveLicenseDate}
+          disabled={loading || savingActiveLicenseDate}
+          style={styles.button}
+        >
+          {savingActiveLicenseDate ? "Saving..." : "Save"}
+        </button>
+      </div>
     </div>
   );
 };
@@ -252,6 +325,12 @@ const styles = {
   row: { display: "flex", alignItems: "center", gap: 12, marginBottom: 16 },
   label: { fontSize: 14, fontWeight: 600 },
   input: { width: 100, padding: 6, borderRadius: 6, border: "1px solid #ccc" },
+  inputWide: {
+    width: 200,
+    padding: 6,
+    borderRadius: 6,
+    border: "1px solid #ccc",
+  },
   button: {
     padding: "6px 16px",
     border: "none",
